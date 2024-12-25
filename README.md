@@ -15,5 +15,3 @@
   <details><summary>◻️ 테스트 코드 </summary> 접은 내용(ex 소스 코드)</details>
 
 ---
-
-  
