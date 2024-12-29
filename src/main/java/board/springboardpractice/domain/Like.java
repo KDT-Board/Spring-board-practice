@@ -1,8 +1,10 @@
 package board.springboardpractice.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.annotation.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @AllArgsConstructor
@@ -17,9 +19,8 @@ public class Like {
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  private User user;      // 좋아요를 누른 유저
+  private User user; //좋아요를 누른 유저
 
   @ManyToOne(fetch = FetchType.LAZY)
-  private Board board;    // 좋아요가 추가된 게시글
-
+  private Board board; //좋아요가 추가된 게시글
 }

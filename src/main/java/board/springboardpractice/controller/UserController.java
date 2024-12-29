@@ -1,10 +1,14 @@
 package board.springboardpractice.controller;
 
-import board.springboardpractice.dto.UserJoinRequest;
+import board.springboardpractice.dto.req.UserJoinRequest;
+import board.springboardpractice.dto.req.UserLoginRequest;
 import board.springboardpractice.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import lombok.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,9 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
-
   private final UserService userService;
-  private final BoardService boardService;
 
   @GetMapping("/join")
   public String joinPage(Model model) {
@@ -24,10 +26,10 @@ public class UserController {
   }
 
   @PostMapping("/join")
-  public String join(@Valid @ModelAttribute UserJoinRequest req, BindingResult bindingResult, Model model) {
+  public String join(@Valid @ModelAttribute UserJoinRequest req, Model model) {
 
     // Validation
-    if (userService.joinValid(req, bindingResult).hasErrors()) {
+    if (userService.join(req)) {
       return "users/join";
     }
 
@@ -49,78 +51,4 @@ public class UserController {
     model.addAttribute("userLoginRequest", new UserLoginRequest());
     return "users/login";
   }
-
-  @GetMapping("/myPage/{category}")
-  public String myPage(@PathVariable String category, Authentication auth, Model model) {
-    model.addAttribute("boards", boardService.findMyBoard(category, auth.getName()));
-    model.addAttribute("category", category);
-    model.addAttribute("user", userService.myInfo(auth.getName()));
-    return "users/myPage";
-  }
-
-  @GetMapping("/edit")
-  public String userEditPage(Authentication auth, Model model) {
-    User user = userService.myInfo(auth.getName());
-    model.addAttribute("userDto", UserDto.of(user));
-    return "users/edit";
-  }
-
-  @PostMapping("/edit")
-  public String userEdit(@Valid @ModelAttribute UserDto dto, BindingResult bindingResult,
-                         Authentication auth, Model model) {
-
-    // Validation
-    if (userService.editValid(dto, bindingResult, auth.getName()).hasErrors()) {
-      return "users/edit";
-    }
-
-    userService.edit(dto, auth.getName());
-
-    model.addAttribute("message", "정보가 수정되었습니다.");
-    model.addAttribute("nextUrl", "/users/myPage/board");
-    return "printMessage";
-  }
-
-  @GetMapping("/delete")
-  public String userDeletePage(Authentication auth, Model model) {
-    User user = userService.myInfo(auth.getName());
-    model.addAttribute("userDto", UserDto.of(user));
-    return "users/delete";
-  }
-
-  @PostMapping("/delete")
-  public String userDelete(@ModelAttribute UserDto dto, Authentication auth, Model model) {
-    Boolean deleteSuccess = userService.delete(auth.getName(), dto.getNowPassword());
-    if (deleteSuccess) {
-      model.addAttribute("message", "탈퇴 되었습니다.");
-      model.addAttribute("nextUrl", "/users/logout");
-      return "printMessage";
-    } else {
-      model.addAttribute("message", "현재 비밀번호가 틀려 탈퇴에 실패하였습니다.");
-      model.addAttribute("nextUrl", "/users/delete");
-      return "printMessage";
-    }
-  }
-
-  @GetMapping("/admin")
-  public String adminPage(@RequestParam(required = false, defaultValue = "1") int page,
-                          @RequestParam(required = false, defaultValue = "") String keyword,
-                          Model model) {
-
-    PageRequest pageRequest = PageRequest.of(page - 1, 10, Sort.by("id").descending());
-    Page<User> users = userService.findAllByNickname(keyword, pageRequest);
-
-    model.addAttribute("users", users);
-    model.addAttribute("keyword", keyword);
-    return "users/admin";
-  }
-
-  @GetMapping("/admin/{userId}")
-  public String adminChangeRole(@PathVariable Long userId,
-                                @RequestParam(required = false, defaultValue = "1") int page,
-                                @RequestParam(required = false, defaultValue = "") String keyword) throws UnsupportedEncodingException {
-    userService.changeRole(userId);
-    return "redirect:/users/admin?page=" + page + "&keyword=" + URLEncoder.encode(keyword, "UTF-8");
-  }
-
 }

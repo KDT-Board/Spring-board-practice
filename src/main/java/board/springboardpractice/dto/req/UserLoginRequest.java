@@ -1,4 +1,4 @@
-package board.springboardpractice.dto;
+package board.springboardpractice.dto.req;
 
 import lombok.Data;
 

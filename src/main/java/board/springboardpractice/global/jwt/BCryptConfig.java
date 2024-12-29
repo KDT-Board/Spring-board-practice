@@ -1,4 +1,4 @@
-package board.springboardpractice.global.config.security;
+package board.springboardpractice.global.jwt;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
