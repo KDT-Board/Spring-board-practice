@@ -2,14 +2,12 @@ package board.springboardpractice.dto.req;
 
 import board.springboardpractice.domain.User;
 import jakarta.validation.constraints.Min;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 public class UserJoinRequest {
   @NonNull
   private String loginId;

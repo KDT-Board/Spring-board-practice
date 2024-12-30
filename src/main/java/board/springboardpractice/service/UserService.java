@@ -4,7 +4,6 @@ import board.springboardpractice.domain.User;
 import board.springboardpractice.dto.req.UserJoinRequest;
 import board.springboardpractice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -55,6 +56,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
   }
 
   //로그인 성공시 실행하는 메소드 (여기서 JWT를 발급하면 됨) => 인가
+  @SneakyThrows
   @Override
   protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
     log.info("성공!");
@@ -71,7 +73,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     log.info("token : {}", token);
     response.addHeader("Authorization", "Bearer " + token);
-
+    String redirectUrl = "/home/index";
+    log.info("리다이렉트: {}", redirectUrl);
+    try {
+      response.sendRedirect(redirectUrl);
+    } catch (IOException e) {
+      response.sendRedirect("/member/login");
+    }
   }
 
   //로그인 실패시 실행하는 메소드
