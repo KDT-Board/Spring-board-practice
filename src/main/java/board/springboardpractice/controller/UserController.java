@@ -6,6 +6,7 @@ import board.springboardpractice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -16,6 +17,16 @@ public class UserController {
   private final UserService userService;
   private static final String LOGIN_PAGE = "login";
   private static final String JOIN_PAGE = "join";
+
+  @GetMapping("/login")
+  public String loginPage() {
+    return LOGIN_PAGE;
+  }
+
+  @GetMapping("/join")
+  public String joinPage() {
+    return JOIN_PAGE;
+  }
 
   @PostMapping("/join")
   public String join(@RequestBody UserJoinRequest req) {
