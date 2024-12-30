@@ -1,5 +1,6 @@
 package board.springboardpractice.service;
 
+import board.springboardpractice.domain.User;
 import board.springboardpractice.dto.CustomUserDetails;
 import board.springboardpractice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +16,9 @@ public class CustomUserDetailsService implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
 
-    return new CustomUserDetails(
-            userRepository.findByLoginId(loginId)
-                    .orElseThrow(() -> new UsernameNotFoundException("등록된 사용자가 아닙니다: " + loginId))
-    );
+    User user= userRepository.findByLoginId(loginId)
+                    .orElseThrow(() -> new UsernameNotFoundException("등록된 사용자가 아닙니다: " + loginId));
+    return new CustomUserDetails(user);
+
   }
 }

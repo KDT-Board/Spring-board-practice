@@ -1,8 +1,10 @@
 package board.springboardpractice.config;
 
+import board.springboardpractice.domain.UserRole;
 import board.springboardpractice.jwt.JWTFilter;
 import board.springboardpractice.jwt.JWTUtil;
 import board.springboardpractice.jwt.LoginFilter;
+import board.springboardpractice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +27,7 @@ public class SecurityConfig {
   //AuthenticationManger에 들어갈 인자 주입
   private final AuthenticationConfiguration authenticationConfiguration;
   private final JWTUtil jwtUtil;
+  private final UserRepository userRepository;
 
   //AuthenticationManager Bean 등록
   @Bean
@@ -59,11 +62,14 @@ public class SecurityConfig {
     http
             .authorizeHttpRequests((auth) -> auth
                     .requestMatchers("/login", "/", "/join").permitAll()
-                    .requestMatchers("/bronze/board").hasRole("BRONZE")
+                    .requestMatchers("/bronze/board").hasAnyAuthority(UserRole.BRONZE.getValue(), UserRole.SILVER.getValue(), UserRole.GOLD.getValue(), UserRole.ADMIN.getValue())
+                    .requestMatchers("/silver/board").hasAnyAuthority(UserRole.SILVER.getValue(), UserRole.GOLD.getValue(), UserRole.ADMIN.getValue())
+                    .requestMatchers("/gold/board").hasAnyAuthority(UserRole.GOLD.getValue(), UserRole.ADMIN.getValue())
+                    .requestMatchers("admin/board").hasAuthority(UserRole.ADMIN.getValue())
                     .anyRequest().authenticated());
     //필터 추가
     http
-            .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class); //LoginFilter 앞에 넣는다는 뜻
+            .addFilterBefore(new JWTFilter(jwtUtil,userRepository), LoginFilter.class); //LoginFilter 앞에 넣는다는 뜻
     //필터 추가
     http
             .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);
