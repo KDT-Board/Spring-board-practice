@@ -1,6 +1,7 @@
 package board.springboardpractice.controller;
 
 import board.springboardpractice.dto.req.UserJoinRequest;
+import board.springboardpractice.dto.req.UserLoginRequest;
 import board.springboardpractice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,5 +23,12 @@ public class UserController {
     userService.join(req);
 
     return "ok";
+  }
+
+  @PostMapping("/login")
+  public String login(@RequestBody UserLoginRequest req) {
+    // LoginFilter에서 실제 인증이 처리되므로,
+    // 이 메서드는 LoginFilter를 통과하지 못한 요청에 대한 처리만 담당
+    return "fail";
   }
 }
