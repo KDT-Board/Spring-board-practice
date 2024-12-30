@@ -1,5 +1,6 @@
 package board.springboardpractice.config;
 
+import board.springboardpractice.jwt.JWTUtil;
 import board.springboardpractice.jwt.LoginFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -21,6 +23,7 @@ public class SecurityConfig {
 
   //AuthenticationManger에 들어갈 인자 주입
   private final AuthenticationConfiguration authenticationConfiguration;
+  private final JWTUtil jwtUtil;
 
   //AuthenticationManager Bean 등록
   @Bean
@@ -31,10 +34,9 @@ public class SecurityConfig {
 
 
   @Bean
-  public PasswordEncoder passwordEncoder() {
+  public BCryptPasswordEncoder bCryptPasswordEncoder() {
 
-    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-
+    return new BCryptPasswordEncoder();
   }
 
   @Bean
@@ -60,7 +62,7 @@ public class SecurityConfig {
                     .anyRequest().authenticated());
     //필터 추가
     http
-            .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
+            .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
     //세션 설정
     http

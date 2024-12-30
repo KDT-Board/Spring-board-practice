@@ -1,5 +1,6 @@
 package board.springboardpractice.jwt;
 
+import board.springboardpractice.dto.CustomUserDetails;
 import board.springboardpractice.dto.req.UserLoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -11,15 +12,20 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
 
 @Slf4j
 @RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
+  private final Long expiredMs = 30 * 60 * 1000L;
   private final AuthenticationManager authenticationManager;
+  private final JWTUtil jwtUtil;
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Override
@@ -52,6 +58,20 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
   @Override
   protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
     log.info("성공!");
+    CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+
+    String loginId = customUserDetails.getUsername(); //loginId 반환
+
+    Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+    Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+    GrantedAuthority auth = iterator.next();
+
+    String role = auth.getAuthority();
+    String token = jwtUtil.createJwt(loginId, role, expiredMs);
+
+    log.info("token : {}", token);
+    response.addHeader("Authorization", "Bearer " + token);
+
   }
 
   //로그인 실패시 실행하는 메소드
