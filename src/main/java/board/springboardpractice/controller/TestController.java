@@ -14,9 +14,9 @@ public class TestController {
     return "main Controller";
   }
 
-  @GetMapping("/admin")
-  public String adminP() {
+  @GetMapping("/bronze/board")
+  public String bronzeBoard() {
 
-    return "admin Controller";
+    return "bronzeBoard accessed!";
   }
 }

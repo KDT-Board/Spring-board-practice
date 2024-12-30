@@ -1,5 +1,6 @@
 package board.springboardpractice.config;
 
+import board.springboardpractice.jwt.JWTFilter;
 import board.springboardpractice.jwt.JWTUtil;
 import board.springboardpractice.jwt.LoginFilter;
 import lombok.RequiredArgsConstructor;
@@ -58,8 +59,11 @@ public class SecurityConfig {
     http
             .authorizeHttpRequests((auth) -> auth
                     .requestMatchers("/login", "/", "/join").permitAll()
-                    .requestMatchers("/admin").hasRole("ADMIN")
+                    .requestMatchers("/bronze/board").hasRole("BRONZE")
                     .anyRequest().authenticated());
+    //필터 추가
+    http
+            .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class); //LoginFilter 앞에 넣는다는 뜻
     //필터 추가
     http
             .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);
