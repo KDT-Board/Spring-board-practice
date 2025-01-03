@@ -32,27 +32,20 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
   @Override
   public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)throws AuthenticationException {
     try {
-
-      //JSON 파싱
-      UserLoginRequest userLoginRequest = objectMapper.readValue(request.getInputStream(),
-              UserLoginRequest.class);
-
-      //클라이언트 요청에서 loginId, password 추출
+      UserLoginRequest userLoginRequest = objectMapper.readValue(request.getInputStream(), UserLoginRequest.class);
       String loginId = userLoginRequest.getLoginId();
       String password = userLoginRequest.getPassword();
 
       log.info("loginId : {}", loginId);
       log.info("password : {}", password);
 
-      //스프링 시큐리티에서 username과 password를 검증하기 위해서는 token에 담아야 함
-      UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginId, password, null);
-
-      //token에 담은 검증을 위한 AuthenticationManager로 전달
-      return authenticationManager.authenticate(authToken);
-
+      return authenticationManager.authenticate(
+              new UsernamePasswordAuthenticationToken(loginId, password, null)
+      );
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+
   }
 
   //로그인 성공시 실행하는 메소드 (여기서 JWT를 발급하면 됨) => 인가
@@ -63,22 +56,25 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
     String loginId = customUserDetails.getUsername(); //loginId 반환
+    log.info("로그인ID : {}", loginId);
 
     Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
     Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
     GrantedAuthority auth = iterator.next();
 
     String role = auth.getAuthority();
+    log.info("role used in jwt : {}", role);
     String token = jwtUtil.createJwt(loginId, role, expiredMs);
 
     log.info("token : {}", token);
     response.addHeader("Authorization", "Bearer " + token);
-    String redirectUrl = "/home/index";
+    String redirectUrl = "/" +  role + "/board";
     log.info("리다이렉트: {}", redirectUrl);
     try {
+      log.info("성공");
       response.sendRedirect(redirectUrl);
     } catch (IOException e) {
-      response.sendRedirect("/member/login");
+      response.sendRedirect("/login");
     }
   }
 

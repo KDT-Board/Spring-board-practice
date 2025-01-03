@@ -7,11 +7,34 @@
 <body>
 <h1>로그인</h1>
 <hr>
-<form th:action="@{/login}" th:object="${member}" method="post">
+<form id="loginForm" th:action="@{/login}" th:object="${member}" method="post" >
     <input type="text" th:field="*{loginId}" placeholder="아이디입력">
     <input type="password" th:field="*{password}" placeholder="비밀번호">
-
     <button type="submit">로그인</button>
 </form>
+
 </body>
 </html>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const data = {
+            loginId: document.querySelector('[name="loginId"]').value,
+            password: document.querySelector('[name="password"]').value
+        };
+
+        fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            }
+        });
+    });
+</script>

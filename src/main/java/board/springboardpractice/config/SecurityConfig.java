@@ -62,10 +62,10 @@ public class SecurityConfig {
     http
             .authorizeHttpRequests((auth) -> auth
                     .requestMatchers("/login", "/", "/join").permitAll()
-                    .requestMatchers("/bronze/board").hasAnyAuthority(UserRole.BRONZE.getValue(), UserRole.SILVER.getValue(), UserRole.GOLD.getValue(), UserRole.ADMIN.getValue())
-                    .requestMatchers("/silver/board").hasAnyAuthority(UserRole.SILVER.getValue(), UserRole.GOLD.getValue(), UserRole.ADMIN.getValue())
-                    .requestMatchers("/gold/board").hasAnyAuthority(UserRole.GOLD.getValue(), UserRole.ADMIN.getValue())
-                    .requestMatchers("admin/board").hasAuthority(UserRole.ADMIN.getValue())
+                    .requestMatchers("/BRONZE/board").hasAnyAuthority(UserRole.BRONZE.getValue(), UserRole.SILVER.getValue(), UserRole.GOLD.getValue(), UserRole.ADMIN.getValue())
+                    .requestMatchers("/SILVER/board").hasAnyAuthority(UserRole.SILVER.getValue(), UserRole.GOLD.getValue(), UserRole.ADMIN.getValue())
+                    .requestMatchers("/GOLD/board").hasAnyAuthority(UserRole.GOLD.getValue(), UserRole.ADMIN.getValue())
+                    .requestMatchers("/ADMIN/board").hasAuthority(UserRole.ADMIN.getValue())
                     .anyRequest().authenticated());
     //필터 추가
     http

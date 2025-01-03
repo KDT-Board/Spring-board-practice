@@ -10,14 +10,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @ResponseBody
 public class BoardController {
+    private static final String BRONZE_PAGE = "/member/BRONZE/board";
 
-  @GetMapping("/bronze/board")
+  @GetMapping("/BRONZE/board")
   public String bronzeBoard() {
 
     String loginId = SecurityUtil.getCurrentUserLoginId();
-    log.info("현재 /bronze/board에 로그인한 사용자 : {}" , loginId);
+    log.info("현재 /BRONZE/board에 로그인한 사용자 : {}" , loginId);
 
-    return "bronzeBoard accessed!";
+    return BRONZE_PAGE;
   }
 
   @GetMapping("/silver/board")
