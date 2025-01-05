@@ -17,6 +17,7 @@
 </html>
 
 <script>
+
     document.getElementById('loginForm').addEventListener('submit', function(event) {
         event.preventDefault();
 
@@ -31,10 +32,14 @@
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
-        }).then(response => {
-            if (response.redirected) {
-                window.location.href = response.url;
-            }
-        });
+        }).then(response => response.json())
+            .then(response => {
+                console.log('응답 뎅이터 : ', response);
+                // JWT 토큰 저장
+                localStorage.setItem('token', response.token);
+                // 리다이렉트 실행
+                window.location.href = response.redirectUrl;
+
+            });
     });
 </script>

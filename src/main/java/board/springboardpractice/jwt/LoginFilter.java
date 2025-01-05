@@ -4,6 +4,7 @@ import board.springboardpractice.dto.CustomUserDetails;
 import board.springboardpractice.dto.req.UserLoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,58 +31,59 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Override
-  public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)throws AuthenticationException {
+  public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
     try {
       UserLoginRequest userLoginRequest = objectMapper.readValue(request.getInputStream(), UserLoginRequest.class);
       String loginId = userLoginRequest.getLoginId();
       String password = userLoginRequest.getPassword();
 
-      log.info("loginId : {}", loginId);
-      log.info("password : {}", password);
+      log.info("Attempting authentication for loginId: {}", loginId);
 
       return authenticationManager.authenticate(
-              new UsernamePasswordAuthenticationToken(loginId, password, null)
+              new UsernamePasswordAuthenticationToken(loginId, password)
       );
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException("Failed to parse login request", e);
     }
-
   }
 
-  //로그인 성공시 실행하는 메소드 (여기서 JWT를 발급하면 됨) => 인가
   @SneakyThrows
   @Override
   protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
-    log.info("성공!");
+    log.info("Authentication successful!");
     CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    String loginId = customUserDetails.getUsername(); //loginId 반환
-    log.info("로그인ID : {}", loginId);
+    String loginId = customUserDetails.getUsername();
+    log.info("Authenticated user loginId: {}", loginId);
 
+    // Extract roles and create JWT
     Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-    Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-    GrantedAuthority auth = iterator.next();
+    String role = authorities.stream().findFirst().map(GrantedAuthority::getAuthority).orElse("USER");
+    log.info("Role used in JWT: {}", role);
 
-    String role = auth.getAuthority();
-    log.info("role used in jwt : {}", role);
-    String token = jwtUtil.createJwt(loginId, role, expiredMs);
+    String token = jwtUtil.createJwt(loginId, role, expiredMs); //로그인 후 유효 토큰 생성
+    Cookie cookie = new Cookie("Authorization", token);
+    cookie.setHttpOnly(true);  // XSS 방지
+    cookie.setPath("/");       // 모든 경로에서 접근 가능
+    cookie.setMaxAge((int) (expiredMs / 1000));  // 쿠키 만료시간 설정
+    response.addCookie(cookie);
 
-    log.info("token : {}", token);
-    response.addHeader("Authorization", "Bearer " + token);
-    String redirectUrl = "/" +  role + "/board";
-    log.info("리다이렉트: {}", redirectUrl);
-    try {
-      log.info("성공");
-      response.sendRedirect(redirectUrl);
-    } catch (IOException e) {
-      response.sendRedirect("/login");
-    }
+    log.info("Login success");
   }
 
-  //로그인 실패시 실행하는 메소드
   @Override
   protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-    response.setStatus(401);
-
+    log.error("Authentication failed: {}", failed.getMessage());
+    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+    try {
+      response.getWriter().write(objectMapper.writeValueAsString(Map.of(
+              "error", "Authentication failed",
+              "message", failed.getMessage()
+      )));
+    } catch (IOException e) {
+      log.error("Failed to write failure response", e);
+    }
   }
 }

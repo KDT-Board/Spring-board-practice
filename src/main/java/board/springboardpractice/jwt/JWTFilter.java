@@ -5,6 +5,7 @@ import board.springboardpractice.dto.CustomUserDetails;
 import board.springboardpractice.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import java.io.IOException;
+
 /*
   인증
  */
@@ -26,46 +29,64 @@ public class JWTFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-    //request에서 Authorization 헤더를 찾음
-    String authorization= request.getHeader("Authorization");
+    String token = null;
 
-    //Authorization 헤더 검증
-    if (authorization == null || !authorization.startsWith("Bearer ")) {
+    // 1. 헤더에서 토큰 확인
+    String authorization = request.getHeader("Authorization");
+    if (authorization != null && authorization.startsWith("Bearer ")) {
+      token = authorization.split(" ")[1];
+    }
 
-      log.info("authorization 헤더 검증 : token is null");
+    // 2. 헤더에 없다면 쿠키에서 토큰 확인
+    if (token == null) {
+      Cookie[] cookies = request.getCookies();
+      if (cookies != null) {
+        for (Cookie cookie : cookies) {
+          if ("Authorization".equals(cookie.getName())) {
+            token = cookie.getValue();
+            break;
+          }
+        }
+      }
+    }
+
+    // 3. 토큰이 없으면 다음 필터로
+    if (token == null) {
+      log.info("token is null");
       filterChain.doFilter(request, response);
-
-      //조건이 해당되면 메소드 종료 (필수)
       return;
     }
 
-    //Bearer 부분 제거 후 순수 토큰만 획득
-    String token = authorization.split(" ")[1];
-
-    //토큰 소멸 시간 검증
+    // 4. 토큰 만료 여부 검증
     if (jwtUtil.isExpired(token)) {
-
       log.info("token 검증 : token is expired");
       filterChain.doFilter(request, response);
-
-      //조건이 해당되면 메소드 종료 (필수)
       return;
     }
 
+    // 5. 토큰에서 사용자 정보 추출
     String loginId = jwtUtil.getLoginId(token);
     User user = userRepository.findByLoginId(loginId)
             .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
-    //UserDetails에 회원 정보 객체 담기
+    // 6. UserDetails에 회원 정보 객체 담기
     CustomUserDetails customUserDetails = new CustomUserDetails(user);
 
-    log.info("JWTFilter customerDetails loginId : {}" , customUserDetails.getUsername());
+    log.info("JWTFilter customerDetails loginId : {}", customUserDetails.getUsername());
 
-    //스프링 시큐리티 인증 토큰 생성
+    // 7. 스프링 시큐리티 인증 토큰 생성
     Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
 
-    //세션에 사용자 등록
+    // 8. 세션에 사용자 등록
     SecurityContextHolder.getContext().setAuthentication(authToken);
+
+    // 9. 경로가 /login인 경우 리다이렉트
+    String requestURI = request.getRequestURI();
+    if ("/login".equals(requestURI)) {
+      String role = user.getUserRole().getValue(); // 사용자의 역할 가져오기
+      response.sendRedirect("/" + role + "/board");
+      return; // 필터 체인 진행하지 않고 종료
+    }
 
     filterChain.doFilter(request, response);
   }
