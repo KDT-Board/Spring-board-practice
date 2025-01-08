@@ -34,6 +34,7 @@ public class JWTFilter extends OncePerRequestFilter {
     // 1. 헤더에서 토큰 확인
     String authorization = request.getHeader("Authorization");
     if (authorization != null && authorization.startsWith("Bearer ")) {
+      log.info("[JWTFilter] 헤더에서 토큰 확인");
       token = authorization.split(" ")[1];
     }
 
@@ -43,6 +44,7 @@ public class JWTFilter extends OncePerRequestFilter {
       if (cookies != null) {
         for (Cookie cookie : cookies) {
           if ("Authorization".equals(cookie.getName())) {
+            log.info("[JWTFilter] 쿠키에서 토큰 확인");
             token = cookie.getValue();
             break;
           }
@@ -74,19 +76,19 @@ public class JWTFilter extends OncePerRequestFilter {
 
     log.info("JWTFilter customerDetails loginId : {}", customUserDetails.getUsername());
 
+    String requestUri = request.getRequestURI();
+    log.info("[JWTFilter] request uri : {} ",requestUri);
+
+//    if (requestUri.endsWith("/board")) {
+//      filterChain.doFilter(request, response);
+//      return;
+//    }
+
     // 7. 스프링 시큐리티 인증 토큰 생성
     Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
 
     // 8. 세션에 사용자 등록
     SecurityContextHolder.getContext().setAuthentication(authToken);
-
-    // 9. 경로가 /login인 경우 리다이렉트
-    String requestURI = request.getRequestURI();
-    if ("/login".equals(requestURI)) {
-      String role = user.getUserRole().getValue(); // 사용자의 역할 가져오기
-      response.sendRedirect("/" + role + "/board");
-      return; // 필터 체인 진행하지 않고 종료
-    }
 
     filterChain.doFilter(request, response);
   }

@@ -13,10 +13,13 @@ import java.util.Date;
 @Component
 public class JWTUtil {
 
-  private SecretKey secretKey;
+  private final SecretKey secretKey;
 
-  public JWTUtil(@Value("${spring.jwt.secret}")String secret) {
-    secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
+  public JWTUtil(@Value("${spring.jwt.secret}") String secret) {
+    this.secretKey = new SecretKeySpec(
+            secret.getBytes(StandardCharsets.UTF_8),
+            "HmacSHA256"  // 직접 알고리즘 지정
+    );
   }
 
   public String getLoginId(String token){
@@ -27,8 +30,23 @@ public class JWTUtil {
     return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userRole", String.class);
   }
 
-  public Boolean isExpired(String token){
-    return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+  public Boolean isExpired(String token) {
+    if (token == null || token.isEmpty()) {
+      return true; // 토큰이 없거나 비어 있으면 만료된 것으로 간주
+    }
+
+    try {
+      return Jwts.parser()
+              .verifyWith(secretKey)
+              .build()
+              .parseSignedClaims(token)
+              .getPayload()
+              .getExpiration()
+              .before(new Date());
+    } catch (Exception e) {
+      // 파싱 중 문제가 발생하면 만료된 것으로 간주
+      return true;
+    }
   }
 
   public String createJwt(String username, String role,Long expiredMs) {

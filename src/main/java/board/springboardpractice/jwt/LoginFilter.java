@@ -68,6 +68,16 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     cookie.setMaxAge((int) (expiredMs / 1000));  // 쿠키 만료시간 설정
     response.addCookie(cookie);
 
+    String redirectUrl = "/" + role + "/board";
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+    objectMapper.writeValue(response.getWriter(), Map.of(
+            "token" , token,
+            "role", role,
+            "redirectUrl", redirectUrl,
+            "message", "Login successful"
+    ));
+
     log.info("Login success");
   }
 
