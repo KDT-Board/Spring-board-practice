@@ -16,7 +16,6 @@ public class UserController {
   private final UserService userService;
   private static final String LOGIN_PAGE = "/member/login";
   private static final String JOIN_PAGE = "/member/join";
-  private static final String AFTER_LOGIN_PAGE = "/home/index";
 
   @GetMapping("/login")
   public String loginPage(Model model) {

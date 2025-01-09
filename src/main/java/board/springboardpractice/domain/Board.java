@@ -45,6 +45,12 @@ public class Board extends BaseEntity {
     this.commentCnt = commentCnt;
   }
 
-
+  public static Board of (String title, String body, User user) {
+    return Board.builder()
+            .title(title)
+            .body(body)
+            .user(user)
+            .build();
+  }
 
 }

@@ -62,7 +62,7 @@ public class SecurityConfig {
     http
             .authorizeHttpRequests((auth) -> auth
                     .requestMatchers("/login", "/", "/join", "/css/**", "/js/**", "/images/**").permitAll()  // 정적 리소스도 허용                    .requestMatchers("/BRONZE/board").hasAnyAuthority(UserRole.BRONZE.getValue(), UserRole.SILVER.getValue(), UserRole.GOLD.getValue(), UserRole.ADMIN.getValue())
-                    .requestMatchers("/member/BRONZE/board","BRONZE/board").hasAnyAuthority(UserRole.BRONZE.getValue(), UserRole.SILVER.getValue(),UserRole.GOLD.getValue(), UserRole.ADMIN.getValue())
+                    .requestMatchers("/member/BRONZE/board/*","BRONZE/board/*").hasAnyAuthority(UserRole.BRONZE.getValue(), UserRole.SILVER.getValue(),UserRole.GOLD.getValue(), UserRole.ADMIN.getValue())
                     .requestMatchers("/SILVER/board").hasAnyAuthority(UserRole.SILVER.getValue(), UserRole.GOLD.getValue(), UserRole.ADMIN.getValue())
                     .requestMatchers("/GOLD/board").hasAnyAuthority(UserRole.GOLD.getValue(), UserRole.ADMIN.getValue())
                     .requestMatchers("/ADMIN/board").hasAuthority(UserRole.ADMIN.getValue())

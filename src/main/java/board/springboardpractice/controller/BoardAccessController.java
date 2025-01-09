@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Slf4j
 @Controller
 public class BoardAccessController {
-    private static final String BRONZE_PAGE = "/member/BRONZE/board";
+  private static final String BRONZE_PAGE = "/member/BRONZE/board";
 
   @GetMapping("/BRONZE/board")
   public String bronzeBoard() {
