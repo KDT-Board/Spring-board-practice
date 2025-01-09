@@ -8,6 +8,8 @@ import board.springboardpractice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class BoardService {
@@ -21,4 +23,9 @@ public class BoardService {
     boardRepository.save(newBoard);
   }
 
+  public List<Board> getAllBoards( String loginId)throws Exception {
+    User userFound = userRepository.findByLoginId(loginId)
+            .orElseThrow(Exception::new);
+    return boardRepository.findAll();
+  }
 }

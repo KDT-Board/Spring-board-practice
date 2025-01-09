@@ -1,20 +1,30 @@
 package board.springboardpractice.controller;
 
+import board.springboardpractice.domain.Board;
 import board.springboardpractice.jwt.SecurityUtil;
+import board.springboardpractice.service.BoardService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.List;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 public class BoardAccessController {
+  private BoardService boardService;
   private static final String BRONZE_PAGE = "/member/BRONZE/board";
 
   @GetMapping("/BRONZE/board")
-  public String bronzeBoard() {
+  public String bronzeBoard(Model model) throws Exception {
 
     String loginId = SecurityUtil.getCurrentUserLoginId();
     log.info("현재 /BRONZE/board에 로그인한 사용자 : {}" , loginId);
+    List<Board> boards = boardService.getAllBoards(loginId);  // boardService에서 구현 필요
+    model.addAttribute("boards", boards);
 
     return BRONZE_PAGE;
   }

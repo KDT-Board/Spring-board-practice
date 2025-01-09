@@ -1,9 +1,69 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Bronze Board</title>
+    <meta charset="UTF-8">
+    <title>Bronze Level Board</title>
+    <style>
+        .board-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .write-button {
+            margin: 20px 0;
+        }
+        .board-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .board-table th, .board-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        .board-table th {
+            background-color: #f5f5f5;
+        }
+        .no-posts {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
 </head>
 <body>
-<!-- 내용 -->
+<div class="board-container">
+    <h1>Bronze Level Board</h1>
+
+    <div class="write-button">
+        <a th:href="@{/BRONZE/board/post}" class="btn">글쓰기</a>
+    </div>
+
+    <table class="board-table">
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>작성일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(boards)}">
+            <td colspan="4" class="no-posts">게시글이 없습니다.</td>
+        </tr>
+        <tr th:each="board, iterStat : ${boards}">
+            <td th:text="${iterStat.count}">1</td>
+            <td>
+                <a th:href="@{/BRONZE/board/{id}(id=${board.id})}"
+                   th:text="${board.title}">제목</a>
+            </td>
+            <td th:text="${board.author}">작성자</td>
+            <td th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}">
+                작성일
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>
