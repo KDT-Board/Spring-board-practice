@@ -15,8 +15,8 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class BoardAccessController {
-  private BoardService boardService;
-  private static final String BRONZE_PAGE = "/member/BRONZE/board";
+  private final BoardService boardService;
+  private static final String BRONZE_PAGE = "member/BRONZE/board";
 
   @GetMapping("/BRONZE/board")
   public String bronzeBoard(Model model) throws Exception {

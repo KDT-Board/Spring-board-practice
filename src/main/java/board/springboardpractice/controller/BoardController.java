@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/BRONZE/board") //추후 다른 레벨의 보드에서도 적용되도록 수정예정
 @RequiredArgsConstructor
 public class BoardController {
-  private static final String BRONZE_PAGE = "/member/BRONZE/board"; //보드 홈
-  private static final String BRONZE_PAGE_POST = "/member/BRONZE/board/post";
+  private static final String BRONZE_PAGE = "member/BRONZE/board"; //보드 홈
+  private static final String BRONZE_PAGE_POST = "member/BRONZE/board/post";
 
   private final BoardService boardService;
 
@@ -38,7 +38,7 @@ public class BoardController {
     log.info("제목: {}, 내용: {}", boardRequestDto.getTitle(), boardRequestDto.getBody());
     log.info("작성자: {}", userDetails.getUsername());
     boardService.save(boardRequestDto, userDetails.getUsername());  // User 엔티티 전체를 전달
-    return "redirect:" + BRONZE_PAGE;  // POST-Redirect-GET 패턴을 위해 redirect 사용
+    return BRONZE_PAGE;  // POST-Redirect-GET 패턴을 위해 redirect 사용
   }
 
 }
