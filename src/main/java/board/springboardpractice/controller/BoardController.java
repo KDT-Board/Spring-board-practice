@@ -2,9 +2,7 @@ package board.springboardpractice.controller;
 
 import board.springboardpractice.dto.CustomUserDetails;
 import board.springboardpractice.dto.req.BoardRequestDto;
-import board.springboardpractice.dto.req.UserJoinRequest;
 import board.springboardpractice.service.BoardService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
