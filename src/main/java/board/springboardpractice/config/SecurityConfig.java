@@ -1,6 +1,6 @@
 package board.springboardpractice.config;
 
-import board.springboardpractice.domain.UserRole;
+import board.springboardpractice.domain.user.UserRole;
 import board.springboardpractice.jwt.JWTFilter;
 import board.springboardpractice.jwt.JWTUtil;
 import board.springboardpractice.jwt.LoginFilter;
@@ -14,8 +14,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 

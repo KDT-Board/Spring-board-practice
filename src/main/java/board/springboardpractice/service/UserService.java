@@ -1,6 +1,6 @@
 package board.springboardpractice.service;
 
-import board.springboardpractice.domain.User;
+import board.springboardpractice.domain.user.User;
 import board.springboardpractice.dto.req.UserJoinRequest;
 import board.springboardpractice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

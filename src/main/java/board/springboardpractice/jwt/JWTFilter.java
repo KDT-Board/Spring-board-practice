@@ -1,7 +1,6 @@
 package board.springboardpractice.jwt;
 
-import board.springboardpractice.domain.User;
-import board.springboardpractice.dto.CustomUserDetails;
+import board.springboardpractice.domain.user.User;
 import board.springboardpractice.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

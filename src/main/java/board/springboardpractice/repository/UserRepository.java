@@ -1,7 +1,7 @@
 package board.springboardpractice.repository;
 
-import board.springboardpractice.domain.User;
-import board.springboardpractice.domain.UserRole;
+import board.springboardpractice.domain.user.User;
+import board.springboardpractice.domain.user.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

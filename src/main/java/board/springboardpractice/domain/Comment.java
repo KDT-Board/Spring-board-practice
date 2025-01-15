@@ -1,6 +1,7 @@
 package board.springboardpractice.domain;
 
 import board.springboardpractice.domain.global.BaseEntity;
+import board.springboardpractice.domain.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

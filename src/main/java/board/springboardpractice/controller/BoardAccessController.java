@@ -26,6 +26,7 @@ public class BoardAccessController {
     List<Board> boards = boardService.getAllBoards(loginId);  // boardService에서 구현 필요
     model.addAttribute("boards", boards);
 
+
     return BRONZE_PAGE;
   }
 

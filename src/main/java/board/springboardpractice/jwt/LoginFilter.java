@@ -1,6 +1,5 @@
 package board.springboardpractice.jwt;
 
-import board.springboardpractice.dto.CustomUserDetails;
 import board.springboardpractice.dto.req.UserLoginRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;

@@ -1,6 +1,6 @@
 package board.springboardpractice.dto.req;
 
-import board.springboardpractice.domain.User;
+import board.springboardpractice.domain.user.User;
 import jakarta.validation.constraints.Min;
 import lombok.*;
 

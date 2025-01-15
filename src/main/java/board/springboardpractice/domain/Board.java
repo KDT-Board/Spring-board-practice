@@ -1,6 +1,7 @@
 package board.springboardpractice.domain;
 
 import board.springboardpractice.domain.global.BaseEntity;
+import board.springboardpractice.domain.user.User;
 import board.springboardpractice.dto.req.BoardRequestDto;
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,4 +1,4 @@
-package board.springboardpractice.domain;
+package board.springboardpractice.domain.user;
 
 import lombok.Getter;
 

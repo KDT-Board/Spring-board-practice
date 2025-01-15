@@ -1,6 +1,6 @@
 package board.springboardpractice.controller;
 
-import board.springboardpractice.dto.CustomUserDetails;
+import board.springboardpractice.jwt.CustomUserDetails;
 import board.springboardpractice.dto.req.BoardRequestDto;
 import board.springboardpractice.service.BoardService;
 import lombok.RequiredArgsConstructor;

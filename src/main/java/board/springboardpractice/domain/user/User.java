@@ -1,6 +1,7 @@
-package board.springboardpractice.domain;
+package board.springboardpractice.domain.user;
 
-import board.springboardpractice.dto.req.UserJoinRequest;
+import board.springboardpractice.domain.Board;
+import board.springboardpractice.domain.Like;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +28,9 @@ public class User {
   private Integer receivedLikeCnt; //유저가 받은 좋아요 수
 
   @Enumerated(EnumType.STRING)
-  private UserRole userRole; //권한
+  private UserRole userRole; //보드 접근 권한
+
+  private Role role; //Spring security 권한
 
   @OneToMany(mappedBy = "user", orphanRemoval = true)
   private List<Board> boards; //작성글
