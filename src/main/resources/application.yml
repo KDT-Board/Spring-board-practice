@@ -13,8 +13,9 @@ spring:
       connection:
         host: localhost
         port: 6379
-        password: your_redis_password
+        password: 1234
         timeout: 6000
+
 
   jpa:
     hibernate:
