@@ -1,7 +1,8 @@
-package board.springboardpractice.jwt;
+package board.springboardpractice.jwt.service;
 
 import board.springboardpractice.domain.user.User;
 import board.springboardpractice.global.exception.BusinessException;
+import board.springboardpractice.jwt.UserPrincipal;
 import board.springboardpractice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

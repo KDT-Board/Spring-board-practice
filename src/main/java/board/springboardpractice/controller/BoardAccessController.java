@@ -1,7 +1,7 @@
 package board.springboardpractice.controller;
 
 import board.springboardpractice.domain.Board;
-import board.springboardpractice.jwt.SecurityUtil;
+import board.springboardpractice.jwt.util.SecurityUtil;
 import board.springboardpractice.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

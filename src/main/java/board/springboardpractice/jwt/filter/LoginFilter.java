@@ -1,6 +1,7 @@
-package board.springboardpractice.jwt;
+package board.springboardpractice.jwt.filter;
 
 import board.springboardpractice.dto.req.UserLoginRequest;
+import board.springboardpractice.jwt.util.JWTUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;

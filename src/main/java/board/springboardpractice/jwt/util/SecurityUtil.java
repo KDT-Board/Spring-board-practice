@@ -1,4 +1,4 @@
-package board.springboardpractice.jwt;
+package board.springboardpractice.jwt.util;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

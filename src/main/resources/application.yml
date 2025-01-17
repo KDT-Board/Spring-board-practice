@@ -17,8 +17,7 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
 
   jwt:
-    access-secret: secretkeysecretkeysecretkeysecretkeysecretkeysecretkey
-    refresh-secret: secretkeysecretkeysecretkeysecretkeysecretkeysecretkeysecretkey
-    access-expiration: 600000  # 10 min: 10min * 60 sec * 1000 millisecond
-    refresh-expiration: 10800000  # 10800000 3 hours: 3hours * 60min * 60sec * 1000 millisecond
-
+    access-secret: 00e693aa1d20e85c5b0940b0767d39d28ca37961c56b5ac0f0089b11e26b2300781e8bd49e91f27bfc70565325a8a3e1dd62f8f563091d3eefbec0dbe7f1faae54f3288992911aede5873d41d2c6a7c3b000d28535351c676424147f32fe90b666a6c8a495ba03cd03677bc602736bcbc5f7db9c0795ab2a6e5beb4f9f1fe51a4694beeb757fa1355c55036cf7ed340fd6f890c3d82c49e51912cc745e0660695240550aeec4821829532122a82c77c88c31f6cc8e3dae73fa3282f6b7663e88516800f77ab7360e7d65c8329aa21b9c686d09a989d42e83ec926be92970a5537322046332a0cba2b04bf83202c84697d27ca084caeffb9c271b2ab78ede1e85
+    refresh-secret: fce49bfbd86cdd2c2498e7f6ad9d6c29a682a028edd2731f4697faa67f2417413181f0f467af269ba48e5a65e687c83845a579506032598ac24279bbd24e15a235ad3e047382ab5f9db80cb4f9111d539fc1116b8aeb2918fbd730bddcaceb57873054b05c2a9c836bc9828ef645de2c3273546e9b1e0e78f3e50229f4f400be6e48ab15ea1ff5ee30844b0f039b91a11afa0b6868c63655c9a751ef636ecdc83458ebc1f8ca69fcfd5d1653358f5434e1bd06db3a6fe07ef285fa239bf222f38db0f47cae683ece282a0b411f9e8a1dd5e21ea8acbd9811c86337028605dd67c120b36c9846cec3fc1ac05be300607fca359a7a3242bca6bdabf938332dc9a7
+    access-expiration: 10800000  # 3 hours: 3hours * 60min * 60sec * 1000 millisecond
+    refresh-expiration: 36000000  # 10 hours: 10hours * 60min * 60sec * 1000 millisecond

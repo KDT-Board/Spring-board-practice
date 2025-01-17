@@ -1,9 +1,9 @@
 package board.springboardpractice.config;
 
 import board.springboardpractice.domain.user.UserRole;
-import board.springboardpractice.jwt.JWTFilter;
-import board.springboardpractice.jwt.JWTUtil;
-import board.springboardpractice.jwt.LoginFilter;
+import board.springboardpractice.jwt.filter.JWTFilter;
+import board.springboardpractice.jwt.util.JWTUtil;
+import board.springboardpractice.jwt.filter.LoginFilter;
 import board.springboardpractice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

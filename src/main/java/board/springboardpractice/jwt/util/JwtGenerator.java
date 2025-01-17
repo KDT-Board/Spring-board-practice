@@ -1,4 +1,4 @@
-package board.springboardpractice.jwt;
+package board.springboardpractice.jwt.util;
 
 import board.springboardpractice.domain.user.User;
 import io.jsonwebtoken.Jwts;
@@ -45,7 +45,8 @@ public class JwtGenerator {
   private Map<String, Object> createClaims(User user) {
     Map<String, Object> claims = new HashMap<>();
     claims.put("Identifier", user.getLoginId());
-    claims.put("Role", user.getUserRole());
+    claims.put("UserRole", user.getUserRole()); //보드 접근 권한
+    claims.put("Role", user.getRole()); //관리자 접근 권한
     return claims;
   }
 

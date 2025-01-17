@@ -1,6 +1,8 @@
-package board.springboardpractice.jwt;
+package board.springboardpractice.jwt.util;
 
 import board.springboardpractice.global.exception.BusinessException;
+import board.springboardpractice.jwt.JwtRule;
+import board.springboardpractice.jwt.TokenStatus;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.security.Keys;
@@ -11,9 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.util.Arrays;
 import java.util.Base64;
+import io.jsonwebtoken.Jwts;
+
+import javax.crypto.SecretKey;
 
 import static board.springboardpractice.global.exception.BusinessExceptionStatus.INVALID_EXPIRED_JWT;
 import static board.springboardpractice.global.exception.BusinessExceptionStatus.INVALID_JWT;
@@ -24,10 +28,10 @@ import static board.springboardpractice.global.exception.BusinessExceptionStatus
 @RequiredArgsConstructor
 public class JWTUtil {
 
-  public TokenStatus getTokenStatus(String token, Key secretKey) throws BusinessException {
+  public TokenStatus getTokenStatus(String token, SecretKey secretKey) throws BusinessException {
     try {
-      Jwts.parserBuilder()
-              .setSigningKey(secretKey)
+      Jwts.parser()
+              .verifyWith(secretKey)
               .build()
               .parseClaimsJws(token);
       return TokenStatus.AUTHENTICATED;
@@ -47,7 +51,7 @@ public class JWTUtil {
             .orElse("");
   }
 
-  public Key getSigningKey(String secretKey) {//서명키를 생성하는 역할
+  public SecretKey verifyWith(String secretKey) {//서명키를 생성하는 역할
     String encodedKey = encodeToBase64(secretKey);
     return Keys.hmacShaKeyFor(encodedKey.getBytes(StandardCharsets.UTF_8));
   }

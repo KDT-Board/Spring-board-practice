@@ -1,6 +1,7 @@
-package board.springboardpractice.jwt;
+package board.springboardpractice.jwt.filter;
 
 import board.springboardpractice.domain.user.User;
+import board.springboardpractice.jwt.util.JWTUtil;
 import board.springboardpractice.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
