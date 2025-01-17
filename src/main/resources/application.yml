@@ -8,6 +8,14 @@ spring:
     username: root
     password: 1234
 
+  data:
+    redis:
+      connection:
+        host: localhost
+        port: 6379
+        password: your_redis_password
+        timeout: 6000
+
   jpa:
     hibernate:
       ddl-auto: update
