@@ -1,25 +1,24 @@
-package board.springboardpractice.domain.global;
+package board.springboardpractice.api.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import lombok.Data;
+import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@Data
-@EntityListeners(AuditingEntityListener.class)
+@Getter
 @MappedSuperclass
-public abstract class BaseEntity {
+@EntityListeners(AuditingEntityListener.class)
+public class RegModDt {
 
   @CreatedDate
-  @Column(updatable = false)
-  private LocalDateTime createdAt;
+  @Column(nullable = false, updatable = false)
+  private LocalDateTime regDt;
 
   @LastModifiedDate
-  private LocalDateTime lastModifiedAt;
-
+  private LocalDateTime modDt;
 }
