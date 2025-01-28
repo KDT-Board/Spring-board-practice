@@ -17,8 +17,8 @@ public class RegModDt {
 
   @CreatedDate
   @Column(nullable = false, updatable = false)
-  private LocalDateTime regDt;
+  private LocalDateTime createdAt;
 
   @LastModifiedDate
-  private LocalDateTime modDt;
+  private LocalDateTime modifiedAt;
 }
