@@ -1,16 +1,17 @@
 package board.springboardpractice.config;
 
+import board.springboardpractice.util.jwt.filter.JwtAuthenticationFilter;
 import board.springboardpractice.util.jwt.token.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -23,36 +24,30 @@ public class SecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
-  public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
     //white list (Spring Security 체크 제외 목록)
 
     // http request 인증 설정
     http.authorizeHttpRequests(authorize -> authorize
-            .requestMatchers(permitAllWhiteList).permitAll()
-            // 사용자 삭제는 관리자 권한만 가능
-            .requestMatchers(HttpMethod.DELETE, "/user").hasRole(RoleName.ROLE_ADMIN.getRole())
-            // 그 외 요청 체크
+            //해당 api에 대해서는 모든 요청을 허가
+            .requestMatchers("/users/sign-in", "/users/sing-up").permitAll()
+            //USER 권한이 있어야 요청 가능
+            .requestMatchers("/users/test").hasRole("USER")
+            // 그 외 요청에서는 인증을 필요로함
             .anyRequest().authenticated()
     );
 
     // form login disable
-    http.formLogin(AbstractHttpConfigurer::disable);
-
-    // logout disable
-    http.logout(AbstractHttpConfigurer::disable);
-
-    // csrf disable
-    http.csrf(AbstractHttpConfigurer::disable);
-
-    // session management
-    http.sessionManagement(session -> session
+    http.formLogin(AbstractHttpConfigurer::disable)
+        .logout(AbstractHttpConfigurer::disable)
+        .csrf(AbstractHttpConfigurer::disable)
+        .sessionManagement(session -> session
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 미사용
-    );
+        );
 
     // before filter
-    http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+    http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
-    //build
-    return httpSecurity.build();
+    return http.build();
   }
 }

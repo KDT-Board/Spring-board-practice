@@ -1,6 +1,6 @@
 package board.springboardpractice.util.jwt.token;
 
-import board.springboardpractice.api.entity.User;
+import board.springboardpractice.api.entity.user.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
