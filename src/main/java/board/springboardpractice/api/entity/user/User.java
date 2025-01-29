@@ -61,6 +61,7 @@ public class User extends RegModDt implements UserDetails {
             .nickname(request.nickname())
             .email(request.email())
             .profileImg(request.profileImg())
+            .roles(List.of("ROLE_USER"))
             .build();
   }
 

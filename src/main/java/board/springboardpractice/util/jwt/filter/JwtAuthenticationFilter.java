@@ -20,6 +20,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    if (checkAllowedURI(request, response, chain)) chain.doFilter(request,response);
+
     //1. Request Header에서 JWT 토큰 추출
     String token = resolveToken((HttpServletRequest) request);
     
@@ -30,6 +32,16 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
       SecurityContextHolder.getContext().setAuthentication(authentication);
     }
     chain.doFilter(request, response);
+  }
+
+  private boolean checkAllowedURI(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    HttpServletRequest httpRequest = (HttpServletRequest) request;
+    String requestURI = httpRequest.getRequestURI();
+    if (requestURI.equals("/users/sign-up")) {
+      chain.doFilter(request, response);
+      return true;
+    }
+    return false;
   }
 
 
