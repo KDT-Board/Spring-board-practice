@@ -1,4 +1,4 @@
-package board.springboardpractice.config;
+package board.springboardpractice.config.security;
 
 import board.springboardpractice.util.jwt.filter.JwtAuthenticationFilter;
 import board.springboardpractice.util.jwt.token.JwtTokenProvider;

@@ -6,6 +6,8 @@ import board.springboardpractice.api.entity.user.dto.request.SignInRequest;
 import board.springboardpractice.api.entity.user.dto.request.SignUpRequest;
 import board.springboardpractice.api.entity.user.dto.response.SignInResponse;
 import board.springboardpractice.api.entity.user.dto.response.SignUpResponse;
+import board.springboardpractice.config.redis.application.RefreshTokenService;
+import board.springboardpractice.util.SecurityUtil;
 import board.springboardpractice.util.jwt.token.JwtToken;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
   private final UserService userService;
   private final PasswordEncoder passwordEncoder;
+  private final RefreshTokenService refreshTokenService;
 
   //회원가입
   @PostMapping("/sign-up")
@@ -45,6 +48,9 @@ public class UserController {
     log.info("JwtToken accesstoken = {}, refreshtoken ={}",
             jwtToken.accessToken(), jwtToken.refreshToken());
 
+    //redis에 저장하기
+    refreshTokenService.saveTokenInfo(username, jwtToken);
+
     SignInResponse signInResponse = new SignInResponse(username, jwtToken);
 
     return ApiResponseEntity.successResponseEntity(
@@ -52,9 +58,18 @@ public class UserController {
     );
   }
 
+  /**
+   * 간단 테스트
+   */
   //USER 권한을 가진 사용자에게 허용
   @PostMapping("/test")
   public String test(){
     return "success";
+  }
+
+  //어떤 회원이 api 요청했는지 조회
+  @PostMapping("/test/who")
+  public String testWho(){
+    return SecurityUtil.getCurrentUsername();
   }
 }

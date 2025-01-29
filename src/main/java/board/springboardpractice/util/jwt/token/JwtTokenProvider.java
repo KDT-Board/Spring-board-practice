@@ -51,6 +51,19 @@ public class JwtTokenProvider {
     long now = (new Date()).getTime();
 
     // accesstoken 생성
+    String accessToken = makeAccessToken(authentication, now, authorities);
+
+    // refreshtoken 생성
+    String refreshToken = makeRefreshToken(now);
+
+    return JwtToken.builder()
+            .grantType("Bearer")
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
+            .build();
+  }
+
+  private String makeAccessToken(Authentication authentication, long now, String authorities) {
     Date tokenExpiresIn1 = new Date(now + Long.parseLong(accessTokenExpiresIn));
     String accessToken = Jwts.builder()
             .setSubject(authentication.getName())
@@ -59,19 +72,16 @@ public class JwtTokenProvider {
             .setExpiration(tokenExpiresIn1)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
+    return accessToken;
+  }
 
-    // refreshtoken 생성
+  private String makeRefreshToken(long now) {
     Date tokenExpiresIn2 = new Date(now + Long.parseLong(refreshTokenExpiresIn));
     String refreshToken = Jwts.builder()
             .setExpiration(tokenExpiresIn2)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
-
-    return JwtToken.builder()
-            .grantType("Bearer")
-            .accessToken(accessToken)
-            .refreshToken(refreshToken)
-            .build();
+    return refreshToken;
   }
 
   // Jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
