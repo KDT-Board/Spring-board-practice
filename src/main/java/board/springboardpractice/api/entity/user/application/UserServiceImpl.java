@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,13 +23,15 @@ public class UserServiceImpl implements UserService{
   private final UserRepository userRepository;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final JwtTokenProvider jwtTokenProvider;
-
+  private final PasswordEncoder passwordEncoder;
   
   //회원가입으로 들어온 요청 처리
+  @Transactional
   @Override
-  public SignUpResponse save(SignUpRequest request) {
-    userRepository.save(User.toEntity(request));
-    return SignUpResponse.toSignUpResponse(request);
+  public SignUpResponse save(SignUpRequest request, PasswordEncoder passwordEncoder) {
+    User saved = userRepository.save(User.toEntity(request,passwordEncoder));
+    log.info("saved User: {}", saved.getEmail());
+    return SignUpResponse.toSignUpResponse(saved);
   }
 
   //로그인 요청으로 들어온 username + password 기반으로 Authentication객체 생성

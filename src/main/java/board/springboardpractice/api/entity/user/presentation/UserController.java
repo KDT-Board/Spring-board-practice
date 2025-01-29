@@ -7,9 +7,11 @@ import board.springboardpractice.api.entity.user.dto.request.SignUpRequest;
 import board.springboardpractice.api.entity.user.dto.response.SignInResponse;
 import board.springboardpractice.api.entity.user.dto.response.SignUpResponse;
 import board.springboardpractice.util.jwt.token.JwtToken;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,11 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 public class UserController {
   private final UserService userService;
+  private final PasswordEncoder passwordEncoder;
 
   //회원가입
   @PostMapping("/sign-up")
-  public ResponseEntity<ApiResponseEntity> signUp(@RequestBody SignUpRequest request){
-    SignUpResponse signUpResponse = userService.save(request);
+  public ResponseEntity<ApiResponseEntity> signUp(@Valid @RequestBody SignUpRequest request){
+    SignUpResponse signUpResponse = userService.save(request,passwordEncoder);
 
     return ApiResponseEntity.successResponseEntity(
             signUpResponse
@@ -34,12 +37,11 @@ public class UserController {
 
   //로그인
   @PostMapping("/sign-in")
-  public ResponseEntity<ApiResponseEntity> signIn(@RequestBody SignInRequest request){
+  public ResponseEntity<ApiResponseEntity> signIn(@Valid @RequestBody SignInRequest request){
     String username = request.username();
     String password = request.password();
 
     JwtToken jwtToken = userService.signIn(username, password);
-    log.info("request username = {}, password = {}", username, password);
     log.info("JwtToken accesstoken = {}, refreshtoken ={}",
             jwtToken.accessToken(), jwtToken.refreshToken());
 

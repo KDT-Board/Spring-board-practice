@@ -37,7 +37,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
   private boolean checkAllowedURI(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
     HttpServletRequest httpRequest = (HttpServletRequest) request;
     String requestURI = httpRequest.getRequestURI();
-    if (requestURI.equals("/users/sign-up")) {
+    if (requestURI.equals("/users/sign-up") || requestURI.equals("/users/sign-in")) {
       chain.doFilter(request, response);
       return true;
     }

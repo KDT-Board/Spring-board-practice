@@ -1,6 +1,6 @@
 package board.springboardpractice.api.entity.user.dto.response;
 
-import board.springboardpractice.api.entity.user.dto.request.SignUpRequest;
+import board.springboardpractice.api.entity.user.User;
 import lombok.Builder;
 
 public record SignUpResponse(
@@ -16,11 +16,11 @@ public record SignUpResponse(
   }
 
   //request to SignUpResponse
-  public static SignUpResponse toSignUpResponse(SignUpRequest request){
+  public static SignUpResponse toSignUpResponse(User user){
     return SignUpResponse.builder()
-            .username(request.username())
-            .nickname(request.nickname())
-            .email(request.email())
+            .username(user.getUsername())
+            .nickname(user.getNickname())
+            .email(user.getEmail())
             .build();
   }
 }

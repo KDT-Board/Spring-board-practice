@@ -16,7 +16,6 @@ import java.util.ArrayList;
 public class CustomUserDetailsService implements UserDetailsService {
 
   private final UserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -29,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
   private UserDetails createUserDetails(User user) {
     return User.builder()
             .username(user.getUsername())
-            .password(passwordEncoder.encode(user.getPassword()))
+            .password(user.getPassword())
             .roles(user.getRoles())
             .build();
   }

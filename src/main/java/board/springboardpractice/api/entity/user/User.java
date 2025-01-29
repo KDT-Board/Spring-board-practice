@@ -8,6 +8,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 public class User extends RegModDt implements UserDetails {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "user_id", updatable = false, unique = true, nullable = false)
   private Long id;
 
@@ -54,10 +55,10 @@ public class User extends RegModDt implements UserDetails {
   }
 
   //dto -> entity
-  public static User toEntity(SignUpRequest request){
+  public static User toEntity(SignUpRequest request, PasswordEncoder passwordEncoder){
     return User.builder()
             .username(request.username())
-            .password(request.password())
+            .password(passwordEncoder.encode(request.password())) //단방향 암호화
             .nickname(request.nickname())
             .email(request.email())
             .profileImg(request.profileImg())
