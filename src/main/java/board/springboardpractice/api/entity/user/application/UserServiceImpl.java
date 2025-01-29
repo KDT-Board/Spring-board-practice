@@ -1,5 +1,8 @@
 package board.springboardpractice.api.entity.user.application;
 
+import board.springboardpractice.api.entity.user.User;
+import board.springboardpractice.api.entity.user.dto.request.SignUpRequest;
+import board.springboardpractice.api.entity.user.dto.response.SignUpResponse;
 import board.springboardpractice.api.entity.user.infrastructure.UserRepository;
 import board.springboardpractice.util.jwt.token.JwtToken;
 import board.springboardpractice.util.jwt.token.JwtTokenProvider;
@@ -19,6 +22,14 @@ public class UserServiceImpl implements UserService{
   private final UserRepository userRepository;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final JwtTokenProvider jwtTokenProvider;
+
+  
+  //회원가입으로 들어온 요청 처리
+  @Override
+  public SignUpResponse save(SignUpRequest request) {
+    userRepository.save(User.toEntity(request));
+    return SignUpResponse.toSignUpResponse(request);
+  }
 
   //로그인 요청으로 들어온 username + password 기반으로 Authentication객체 생성
   @Transactional

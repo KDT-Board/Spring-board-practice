@@ -1,6 +1,7 @@
 package board.springboardpractice.api.entity.user;
 
 import board.springboardpractice.api.common.entity.RegModDt;
+import board.springboardpractice.api.entity.user.dto.request.SignUpRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -50,6 +51,17 @@ public class User extends RegModDt implements UserDetails {
     this.roles = authorities.stream()
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.toList());
+  }
+
+  //dto -> entity
+  public static User toEntity(SignUpRequest request){
+    return User.builder()
+            .username(request.username())
+            .password(request.password())
+            .nickname(request.nickname())
+            .email(request.email())
+            .profileImg(request.profileImg())
+            .build();
   }
 
   @Override

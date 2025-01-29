@@ -1,4 +1,4 @@
-package board.springboardpractice.api.entity.user.dto;
+package board.springboardpractice.api.entity.user.dto.request;
 
 
 import lombok.Builder;
