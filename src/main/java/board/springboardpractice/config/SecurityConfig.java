@@ -31,7 +31,7 @@ public class SecurityConfig {
     // http request 인증 설정
     http.authorizeHttpRequests(authorize -> authorize
             //해당 api에 대해서는 모든 요청을 허가
-            .requestMatchers("/users/sign-in", "/users/sign-up").permitAll()
+            .requestMatchers("/users/sign-in", "/users/sign-up","/kakaologin", "/callback").permitAll()
             //USER 권한이 있어야 요청 가능
             .requestMatchers("/users/test").hasRole("USER")
             // 그 외 요청에서는 인증을 필요로함
