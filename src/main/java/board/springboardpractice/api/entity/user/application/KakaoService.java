@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,13 +19,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KakaoService {
@@ -32,7 +37,7 @@ public class KakaoService {
   private final UserRepository userRepository;
   private final AuthenticationManagerBuilder authenticationManagerBuilder;
   private final JwtTokenProvider jwtTokenProvider;
-
+  private final PasswordEncoder passwordEncoder;
 
   @Value("${oauth2.kakao.api_key}")
   private String clientId;
@@ -130,27 +135,31 @@ public class KakaoService {
   //3. 카카오ID로 회원가입 & 로그인 처리
   private LoginResponse kakaoUserLogin(HashMap<String, Object> userInfo){
 
-    Long uid= Long.valueOf(userInfo.get("id").toString());
     String kakaoEmail = userInfo.get("email").toString();
     String nickName = userInfo.get("nickname").toString();
 
     User kakaoUser = userRepository.findByEmail(kakaoEmail).orElse(null);
 
+    String randomPassword = null;
     if (kakaoUser == null) {   //회원가입
+      randomPassword = UUID.randomUUID().toString().substring(0, 20);
+      String encodedPassword = passwordEncoder.encode(randomPassword);
       kakaoUser= User.builder()
               .username(nickName)
               .nickname(nickName)
               .email(kakaoEmail)
-              .password("KAKAO")
+              .password(encodedPassword)
               .loginType(LoginType.KAKAO)
+              .roles(List.of("ROLE_USER"))
               .build();
 
       userRepository.save(kakaoUser);
     }
     //토큰 생성
-    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(nickName, "KAKAO");
+    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(nickName, randomPassword);
     Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
     JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+    log.info(jwtToken.accessToken());
 
     return new LoginResponse(nickName,kakaoEmail,jwtToken);
   }

@@ -42,6 +42,7 @@ public class User extends RegModDt implements UserDetails {
 
   private String profileImg;
 
+  @Enumerated(EnumType.STRING)
   private LoginType loginType;
 
   @ElementCollection(fetch = FetchType.EAGER)
@@ -64,6 +65,7 @@ public class User extends RegModDt implements UserDetails {
             .nickname(request.nickname())
             .email(request.email())
             .profileImg(request.profileImg())
+            .loginType(LoginType.ORIGINAL)
             .roles(List.of("ROLE_USER"))
             .build();
   }

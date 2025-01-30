@@ -3,16 +3,16 @@ package board.springboardpractice.api.entity.user.presentation;
 import board.springboardpractice.api.common.response.entity.ApiResponseEntity;
 import board.springboardpractice.api.entity.user.application.KakaoService;
 import board.springboardpractice.util.oauth.LoginResponse;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class KakaoController {
@@ -43,7 +43,7 @@ public class KakaoController {
   public ResponseEntity<ApiResponseEntity> kakaoLoginRedirect(@RequestParam(value = "code", required = false) String code) throws Throwable {
     System.out.println("code:" + code);
     LoginResponse loginResponse = kakaoService.kakaoLogin(code);
-
+    log.info("{} : ", loginResponse.token());
     return ApiResponseEntity.successResponseEntity(
             loginResponse
     );
