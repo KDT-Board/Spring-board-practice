@@ -22,7 +22,13 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
 
+
 jwt:
   secret: 00e693aa1d20e85c5b0940b0767d39d28ca37961c56b5ac0f0089b11e26b2300781e8bd49e91f27bfc70565325a8a3e1dd62f8f563091d3eefbec0dbe7f1faae54f3288992911aede5873d41d2c6a7c3b000d28535351c676424147f32fe90b666a6c8a495ba03cd03677bc602736bcbc5f7db9c0795ab2a6e5beb4f9f1fe51a4694beeb757fa1355c55036cf7ed340fd6f890c3d82c49e51912cc745e0660695240550aeec4821829532122a82c77c88c31f6cc8e3dae73fa3282f6b7663e88516800f77ab7360e7d65c8329aa21b9c686d09a989d42e83ec926be92970a5537322046332a0cba2b04bf83202c84697d27ca084caeffb9c271b2ab78ede1e85
   access-expiration: 10800000  # 3 hours: 3hours * 60min * 60sec * 1000 millisecond
   refresh-expiration: 36000000  # 10 hours: 10hours * 60min * 60sec * 1000 millisecond
+
+oauth2:
+  kakao:
+    api_key: 33f598adf74eef70452f0af74e23ac67
+    redirect_uri : http://localhost:8080/callback

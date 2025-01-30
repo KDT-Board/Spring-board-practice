@@ -5,17 +5,17 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.SecretKey;
+import java.rmi.AccessException;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -77,7 +77,11 @@ public class JwtTokenProvider {
 
   private String makeRefreshToken(long now) {
     Date tokenExpiresIn2 = new Date(now + Long.parseLong(refreshTokenExpiresIn));
+    Claims claims = Jwts
+            .claims();
     String refreshToken = Jwts.builder()
+            .setClaims(claims)
+            .setIssuedAt(new Date(now))
             .setExpiration(tokenExpiresIn2)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
@@ -105,14 +109,38 @@ public class JwtTokenProvider {
   }
 
   // 토큰 정보를 검증하는 메서드
-  public boolean validateToken(String token) {
+  public boolean validateToken(String token) throws AccessException {
     try {
       Jwts.parser().setSigningKey(key).parseClaimsJws(token);  // parser()로 변경
       return true;
     } catch (SecurityException | MalformedJwtException e) {
       log.info("Invalid JWT Token", e);
     } catch (ExpiredJwtException e) {
-      log.info("Expired JWT Token", e);
+      log.info("ACCESS TOKEN이 만료되었습니다.");
+      //log.info("Expired JWT Token", e);
+      // redis에 저장되어있는 토큰 정보를 만료된 access token으로 찾아온다.
+//      RefreshToken foundTokenInfo = refreshTokenRepository.findByAccessToken(token)
+//              .orElseThrow(() -> new AccessException(e.getMessage()));
+//      String refreshToken = foundTokenInfo.getRefreshToken();
+//      String username = foundTokenInfo.getUsername();
+//
+//      UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+//
+//      // 2. 실제 검증. authenticate() 메서드를 통해 요청된 Member 에 대한 검증 진행
+//      // authenticate 메서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드 실행
+//      Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+//
+//      long now = (new Date()).getTime();
+//      String accessToken = makeAccessToken(authentication, now, "ROLE_USER");
+//
+//      refreshTokenRepository.save(RefreshToken.builder()
+//              .username(username)
+//              .accessToken(accessToken)
+//              .refreshToken(refreshToken)
+//              .build()
+//      );
+      //클라이언트 측 쿠키의 Access Token도 업데이트를 해준다.
+
     } catch (UnsupportedJwtException e) {
       log.info("Unsupported JWT Token", e);
     } catch (IllegalArgumentException e) {
