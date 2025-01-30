@@ -1,6 +1,7 @@
 package board.springboardpractice.util.jwt.token;
 
 import board.springboardpractice.api.entity.user.User;
+import board.springboardpractice.api.entity.user.application.ReissueService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -26,12 +27,13 @@ public class JwtTokenProvider {
   private final SecretKey key;  // SecretKey 객체로 수정
   private final String accessTokenExpiresIn;
   private final String refreshTokenExpiresIn;
+  private final ReissueService reissueService;
 
   public JwtTokenProvider(
           @Value("${jwt.secret}") String secretKey,
           @Value("${jwt.access-expiration}") String accessTokenExpiresIn,
-          @Value("${jwt.refresh-expiration}") String refreshTokenExpiresIn
-  ) {
+          @Value("${jwt.refresh-expiration}") String refreshTokenExpiresIn,
+          ReissueService reissueService) {
     this.accessTokenExpiresIn = accessTokenExpiresIn;
     this.refreshTokenExpiresIn = refreshTokenExpiresIn;
 
@@ -39,6 +41,7 @@ public class JwtTokenProvider {
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
     log.info("Decoded key length: {} bytes", keyBytes.length);
     this.key = Keys.hmacShaKeyFor(keyBytes);  // SecretKey로 변환
+    this.reissueService = reissueService;
   }
 
   // User 정보를 가지고 accesstoken, refreshtoken을 생성하는 메서드
@@ -109,44 +112,21 @@ public class JwtTokenProvider {
   }
 
   // 토큰 정보를 검증하는 메서드
-  public boolean validateToken(String token) throws AccessException {
+  public String validateToken(String token) throws AccessException {
     try {
       Jwts.parser().setSigningKey(key).parseClaimsJws(token);  // parser()로 변경
-      return true;
+      return token;
     } catch (SecurityException | MalformedJwtException e) {
       log.info("Invalid JWT Token", e);
     } catch (ExpiredJwtException e) {
       log.info("ACCESS TOKEN이 만료되었습니다.");
-      //log.info("Expired JWT Token", e);
-      // redis에 저장되어있는 토큰 정보를 만료된 access token으로 찾아온다.
-//      RefreshToken foundTokenInfo = refreshTokenRepository.findByAccessToken(token)
-//              .orElseThrow(() -> new AccessException(e.getMessage()));
-//      String refreshToken = foundTokenInfo.getRefreshToken();
-//      String username = foundTokenInfo.getUsername();
-//
-//      UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-//
-//      // 2. 실제 검증. authenticate() 메서드를 통해 요청된 Member 에 대한 검증 진행
-//      // authenticate 메서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드 실행
-//      Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-//
-//      long now = (new Date()).getTime();
-//      String accessToken = makeAccessToken(authentication, now, "ROLE_USER");
-//
-//      refreshTokenRepository.save(RefreshToken.builder()
-//              .username(username)
-//              .accessToken(accessToken)
-//              .refreshToken(refreshToken)
-//              .build()
-//      );
-      //클라이언트 측 쿠키의 Access Token도 업데이트를 해준다.
-
+      //return reissueService.reissueAccessToken(token);
     } catch (UnsupportedJwtException e) {
       log.info("Unsupported JWT Token", e);
     } catch (IllegalArgumentException e) {
       log.info("JWT claims string is empty.", e);
     }
-    return false;
+    return null;
   }
 
   // 토큰에서 사용자 정보 가져오기
