@@ -6,10 +6,10 @@ import lombok.Builder;
 public record LoginResponse(
         String nickname,
         String email,
-        AuthTokens token
+        JwtToken token
 ) {
   @Builder
-  public LoginResponse(String nickname, String email, AuthTokens token) {
+  public LoginResponse(String nickname, String email, JwtToken token) {
     this.nickname = nickname;
     this.email = email;
     this.token = token;

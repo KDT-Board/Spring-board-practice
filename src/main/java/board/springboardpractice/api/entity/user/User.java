@@ -42,6 +42,8 @@ public class User extends RegModDt implements UserDetails {
 
   private String profileImg;
 
+  private LoginType loginType;
+
   @ElementCollection(fetch = FetchType.EAGER)
   @Builder.Default
   private List<String> roles = new ArrayList<>();

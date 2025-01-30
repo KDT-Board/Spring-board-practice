@@ -1,10 +1,12 @@
 package board.springboardpractice.api.entity.user.presentation;
 
+import board.springboardpractice.api.common.response.entity.ApiResponseEntity;
 import board.springboardpractice.api.entity.user.application.KakaoService;
 import board.springboardpractice.util.oauth.LoginResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,9 +40,12 @@ public class KakaoController {
   }
 
   @GetMapping("/callback")
-  public ModelAndView kakaoLoginRedirect(@RequestParam(value = "code", required = false) String code) throws Throwable {
+  public ResponseEntity<ApiResponseEntity> kakaoLoginRedirect(@RequestParam(value = "code", required = false) String code) throws Throwable {
     System.out.println("code:" + code);
     LoginResponse loginResponse = kakaoService.kakaoLogin(code);
-    return null;
+
+    return ApiResponseEntity.successResponseEntity(
+            loginResponse
+    );
   }
 }
