@@ -1,5 +1,6 @@
 package board.springboardpractice.util.jwt.userdetails;
 
+import board.springboardpractice.api.entity.global.Level;
 import board.springboardpractice.api.entity.user.domain.User;
 import board.springboardpractice.api.entity.user.infrastructure.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,4 +31,19 @@ public class CustomUserDetailsService implements UserDetailsService {
             .build();
   }
 
+  public void validateAvailableUser(UserDetails userDetails, Level currentLevel) {
+    boolean hasRequiredLevel = userDetails.getAuthorities().stream()
+            .anyMatch(authority -> {
+              try {
+                Level level = Level.valueOf(String.valueOf(authority));
+                return level.ordinal() >= currentLevel.ordinal();
+              } catch (IllegalArgumentException e) {
+                return false;
+              }
+            });
+
+    if (!hasRequiredLevel) {
+      throw new IllegalArgumentException("Required " + currentLevel +" level or higher");
+    }
+  }
 }

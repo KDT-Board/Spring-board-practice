@@ -1,6 +1,7 @@
 package board.springboardpractice.api.entity.board.domain;
 
 import board.springboardpractice.api.common.entity.RegModDt;
+import board.springboardpractice.api.entity.board.dto.request.BoardPostRequest;
 import board.springboardpractice.api.entity.global.Level;
 import board.springboardpractice.api.entity.user.domain.User;
 import jakarta.persistence.*;
@@ -11,7 +12,6 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
 public class Board extends RegModDt {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,5 +42,32 @@ public class Board extends RegModDt {
   @JoinColumn(name = "user_id")
   private User user;
 
+  @Builder
+  private Board(Level boardLevel, Long boardStatus, String title, String content, User user) {
+    this.boardLevel = boardLevel;
+    this.boardStatus = boardStatus;
+    this.title = title;
+    this.content = content;
+    this.user = user;
+  }
 
+  public static Board of(Level boardLevel, Long boardStatus, String title, String content, User user){
+    return Board.builder()
+            .boardLevel(boardLevel)
+            .boardStatus(boardStatus)
+            .title(title)
+            .content(content)
+            .user(user)
+            .build();
+  }
+
+  public static Board toEntity(BoardPostRequest boardPostRequest) {
+    return Board.of(
+            boardPostRequest.boardLevel(),
+            boardPostRequest.boardStatus(),
+            boardPostRequest.title(),
+            boardPostRequest.content(),
+            boardPostRequest.user()
+    );
+  }
 }
