@@ -1,6 +1,6 @@
 package board.springboardpractice.api.entity.user.infrastructure;
 
-import board.springboardpractice.api.entity.user.User;
+import board.springboardpractice.api.entity.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

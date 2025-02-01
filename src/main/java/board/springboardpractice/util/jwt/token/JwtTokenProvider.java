@@ -1,6 +1,6 @@
 package board.springboardpractice.util.jwt.token;
 
-import board.springboardpractice.api.entity.user.User;
+import board.springboardpractice.api.entity.user.domain.User;
 import board.springboardpractice.api.entity.user.application.ReissueService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

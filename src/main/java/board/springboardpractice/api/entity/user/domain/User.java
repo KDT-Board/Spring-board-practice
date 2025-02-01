@@ -1,6 +1,8 @@
-package board.springboardpractice.api.entity.user;
+package board.springboardpractice.api.entity.user.domain;
 
 import board.springboardpractice.api.common.entity.RegModDt;
+import board.springboardpractice.api.entity.board.domain.Board;
+import board.springboardpractice.api.entity.global.Level;
 import board.springboardpractice.api.entity.user.dto.request.SignUpRequest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -49,6 +51,25 @@ public class User extends RegModDt implements UserDetails {
   @Builder.Default
   private List<String> roles = new ArrayList<>();
 
+  // ------
+  @OneToMany(mappedBy = "user")
+  private List<Board> boards = new ArrayList<>();
+
+  //level 업그레이드
+  public void upgradeUserLevel() {
+    Level currentLevel = Level.valueOf(roles.get(1));
+
+    long currentLevelBoardCount = boards.stream()
+            .filter(board -> board.getBoardLevel() == currentLevel)
+            .count();
+
+    if (currentLevelBoardCount >= 10 && currentLevel == Level.BRONZE) {
+      roles.set(1, Level.SILVER.name());
+    } else if (currentLevelBoardCount >= 20 && currentLevel == Level.SILVER) {
+      roles.set(1, Level.GOLD.name());
+    }
+  }
+
   public User(String username, String password, Collection<? extends GrantedAuthority> authorities){
     this.username = username;
     this.password = password;
@@ -66,7 +87,7 @@ public class User extends RegModDt implements UserDetails {
             .email(request.email())
             .profileImg(request.profileImg())
             .loginType(LoginType.ORIGINAL)
-            .roles(List.of("ROLE_USER"))
+            .roles(List.of("ROLE_USER", Level.BRONZE.name()))
             .build();
   }
 
