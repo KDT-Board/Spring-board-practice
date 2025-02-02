@@ -15,14 +15,7 @@ java {
 }
 
 configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
     asciidoctorExt
-}
-
-repositories {
-    mavenCentral()
 }
 
 ext {
@@ -36,23 +29,21 @@ test {
 asciidoctor {
     inputs.dir snippetsDir
     configurations 'asciidoctorExt'
-
-    configurations 'asciidoctorExt' // 확장 플러그인 설정
-
-    sources { // 특정 파일만 html로 만든다.
-        include("**/index.adoc")
-    }
-    baseDirFollowsSourceFile()
-
     dependsOn test
+
+    delete file('src/main/resources/static/docs')
 }
 
-asciidoctor.doFirst {
-    delete file('src/main/resources/static/docs')
+bootJar {
+    dependsOn asciidoctor
+    from ("${asciidoctor.outputDir}/html5") {
+        into 'BOOT-INF/classes/static/docs'
+    }
 }
 
 tasks.register('copyDocument', Copy) {
     dependsOn asciidoctor
+
     from file("build/docs/asciidoc")
     into file("src/main/resources/static/docs")
 }
@@ -61,6 +52,9 @@ build {
     dependsOn copyDocument
 }
 
+repositories {
+    mavenCentral()
+}
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
