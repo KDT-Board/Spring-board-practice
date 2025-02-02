@@ -1,6 +1,6 @@
 package board.springboardpractice.api.entity.user.dto.response;
 
-import board.springboardpractice.api.entity.user.User;
+import board.springboardpractice.api.entity.user.domain.User;
 import lombok.Builder;
 
 public record SignUpResponse(

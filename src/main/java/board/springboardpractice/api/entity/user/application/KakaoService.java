@@ -1,7 +1,7 @@
 package board.springboardpractice.api.entity.user.application;
 
-import board.springboardpractice.api.entity.user.LoginType;
-import board.springboardpractice.api.entity.user.User;
+import board.springboardpractice.api.entity.user.domain.LoginType;
+import board.springboardpractice.api.entity.user.domain.User;
 import board.springboardpractice.api.entity.user.infrastructure.UserRepository;
 import board.springboardpractice.util.jwt.token.JwtToken;
 import board.springboardpractice.util.jwt.token.JwtTokenProvider;

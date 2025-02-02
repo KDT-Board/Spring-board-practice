@@ -1,6 +1,6 @@
 package board.springboardpractice.api.entity.user.application;
 
-import board.springboardpractice.api.entity.user.User;
+import board.springboardpractice.api.entity.user.domain.User;
 import board.springboardpractice.api.entity.user.dto.request.SignUpRequest;
 import board.springboardpractice.api.entity.user.dto.response.SignUpResponse;
 import board.springboardpractice.api.entity.user.infrastructure.UserRepository;
