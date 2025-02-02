@@ -1,35 +1,7 @@
 # KDT-BOARD 개인 프로젝트
 
 ---
-![Generic badge](https://img.shields.io/badge/KDTBOARD-week1-green.svg)
+![Generic badge](https://img.shields.io/badge/KDTBOARD-green.svg)
 ![Generic badge](https://img.shields.io/badge/version-1.0.0-brightgreen.svg)
 > JWT를 이용한 로그인 및 등급제 게시판을 구현한 저장소입니다.
 
-# 목차
-
-- [시작하기](#시작하기)
-- [기능 목록](#기능-목록)
-    - [유저 기능](#유저기능)
-    - [게시판 기능](#게시판 기능)
-    - [등급 기능](#등급 기능)
-    - [관리자 기능](#관리자 기능)
-
-## 유저 기능
-    
-회원가입시 아이디와 닉네임은 중복이 불가하다.
-
-아이디, 비밀번호로 로그인을 할 수 있다.
-
-비밀번호와 닉네임 수정이 가능하다
-
-회원 탈퇴시, 탈퇴한 유저가 작성한 글, 댓글, 좋아요 모두 삭제된다.
-
-마이 페이지에서 본인 정보 확인, 수정 및 본인이 작성한 글, 댓글을 추가한 글, 좋아요 누른 글 리스트를 확인할 수 있다.
-
-## 게시판 기능
-
-
-## 등급 기능
-
-
-## 관리자 기능
