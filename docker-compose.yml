@@ -1,35 +1,30 @@
-version: "3"
 services:
-  mysql:
-    image: mysql
-
-    container_name: mysql
+  #  my-server:
+  #    build: .
+  #    ports:
+  #      - 8080:8080
+  #    depends_on:
+  #      my-db:
+  #        condition: service_healthy
+  #      my-cache-server:
+  #        condition: service_healthy
+  my-db:
+    image: mysql:latest
     environment:
-      MYSQL_DATABASE: board
       MYSQL_ROOT_PASSWORD: 1234
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 1234
-      TZ : Asia/Seoul
-    volumes:
-      - "./data:/var/lib/mysql:rw"
-      - "./mysql:/var/lib/mysql" // 볼륨(컨테이너가 죽어도 데이터를 유지)
-    restart: always
+      MYSQL_DATABASE: board
     ports:
       - 3307:3306
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping" ]
+      interval: 5s
+      retries: 10
 
-  redis:
-    container_name: redis
-
+  my-cache-server:
     image: redis
     ports:
       - 6379:6379
-
-  springbootapp:
-    build: .
-    container_name: springbootapp
-
-    ports:
-      - 8080:8080
-    depends_on:
-      - mysql
-      - redis
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      retries: 10
